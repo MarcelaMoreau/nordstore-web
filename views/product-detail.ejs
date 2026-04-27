@@ -1,0 +1,129 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="/">Home</a> /
+      <a href="/products">Products</a> /
+      <a href="/products?category=<%= product.category %>"><%= product.category.charAt(0).toUpperCase() + product.category.slice(1) %></a> /
+      <span><%= product.name %></span>
+    </nav>
+
+    <div class="product-detail">
+      <div class="product-detail-image">
+        <img src="<%= product.image %>" alt="<%= product.name %>">
+        <% if (product.badge) { %>
+          <span class="badge badge--<%= product.badge.toLowerCase().replace(' ', '-') %>"><%= product.badge %></span>
+        <% } %>
+      </div>
+
+      <div class="product-detail-info">
+        <span class="product-detail-category"><%= product.category %></span>
+        <h1><%= product.name %></h1>
+
+        <div class="product-detail-rating">
+          <span class="stars">★ <%= product.rating %></span>
+          <span class="review-count"><%= product.reviewCount.toLocaleString() %> reviews</span>
+        </div>
+
+        <div class="product-detail-price">
+          <span class="price">€<%= product.price.toFixed(2) %></span>
+          <% if (product.originalPrice) { %>
+            <span class="original-price">€<%= product.originalPrice.toFixed(2) %></span>
+            <span class="discount">Save €<%= (product.originalPrice - product.price).toFixed(2) %></span>
+          <% } %>
+        </div>
+
+        <p class="product-detail-desc"><%= product.description %></p>
+
+        <div class="product-features">
+          <h3>Features</h3>
+          <ul>
+            <% product.features.forEach(f => { %>
+              <li><%= f %></li>
+            <% }) %>
+          </ul>
+        </div>
+
+        <div class="add-to-cart-form">
+          <div class="quantity-control">
+            <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
+            <input type="number" id="qty-input" value="1" min="1" max="10" readonly>
+            <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+          <button type="button" class="btn btn-primary btn-lg add-to-cart-btn" onclick="addToCart('<%= product.id %>')">
+            Add to Cart — €<span id="line-total"><%= product.price.toFixed(2) %></span>
+          </button>
+        </div>
+
+        <div class="product-meta">
+          <div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Free shipping over €100</div>
+          <div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> 30-day returns</div>
+          <div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 2-year warranty</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<% if (related.length > 0) { %>
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-header">
+      <h2>You might also like</h2>
+    </div>
+    <div class="product-grid">
+      <% related.forEach(product => { %>
+        <%- include('partials/product-card', { product }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<script>
+  const unitPrice = <%= product.price %>;
+
+  function changeQty(delta) {
+    const input = document.getElementById('qty-input');
+    let val = parseInt(input.value) + delta;
+    if (val < 1) val = 1;
+    if (val > 10) val = 10;
+    input.value = val;
+    document.getElementById('line-total').textContent = (unitPrice * val).toFixed(2);
+  }
+
+  function addToCart(productId) {
+    const qty = parseInt(document.getElementById('qty-input').value);
+    fetch('/cart/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ productId, quantity: qty })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        // Update cart badge
+        let badge = document.querySelector('.cart-badge');
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'cart-badge';
+          document.querySelector('.cart-link').appendChild(badge);
+        }
+        badge.textContent = data.cartCount;
+
+        // Show feedback
+        const btn = document.querySelector('.add-to-cart-btn');
+        const original = btn.innerHTML;
+        btn.innerHTML = '✓ Added to Cart';
+        btn.classList.add('btn--success');
+        setTimeout(() => {
+          btn.innerHTML = original;
+          btn.classList.remove('btn--success');
+        }, 1500);
+      }
+    });
+  }
+</script>
+
+<%- include('partials/footer') %>

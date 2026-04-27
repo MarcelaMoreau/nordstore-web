@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container">
+    <div class="confirmation">
+      <div class="confirmation-icon">✓</div>
+      <h1>Order Confirmed!</h1>
+      <p class="confirmation-order-id">Order #<%= orderId %></p>
+      <p>Thank you for your purchase. A confirmation email has been sent to <strong><%= orderDetails.email %></strong>.</p>
+      <p class="confirmation-note">(This is a demo — no real order was placed or payment charged.)</p>
+      <div class="confirmation-actions">
+        <a href="/products" class="btn btn-primary">Continue Shopping</a>
+        <a href="/" class="btn btn-outline">Back to Home</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

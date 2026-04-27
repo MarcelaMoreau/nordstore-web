@@ -1,0 +1,22 @@
+<div class="product-card">
+  <a href="/product/<%= product.slug %>" class="product-card-image">
+    <img src="<%= product.thumbnail %>" alt="<%= product.name %>" loading="lazy">
+    <% if (product.badge) { %>
+      <span class="badge badge--<%= product.badge.toLowerCase().replace(' ', '-') %>"><%= product.badge %></span>
+    <% } %>
+  </a>
+  <div class="product-card-info">
+    <span class="product-card-category"><%= product.category %></span>
+    <a href="/product/<%= product.slug %>" class="product-card-name"><%= product.name %></a>
+    <div class="product-card-rating">
+      <span class="stars">★ <%= product.rating %></span>
+      <span class="review-count">(<%= product.reviewCount.toLocaleString() %>)</span>
+    </div>
+    <div class="product-card-price">
+      <span class="price">€<%= product.price.toFixed(2) %></span>
+      <% if (product.originalPrice) { %>
+        <span class="original-price">€<%= product.originalPrice.toFixed(2) %></span>
+      <% } %>
+    </div>
+  </div>
+</div>

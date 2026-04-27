@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container">
+    <div class="page-title">
+      <h1>All Products</h1>
+      <p><%= products.length %> product<%= products.length !== 1 ? 's' : '' %></p>
+    </div>
+
+    <div class="filters-bar">
+      <div class="filter-group">
+        <label>Category:</label>
+        <div class="filter-pills">
+          <a href="/products" class="pill <%= activeCategory === 'all' ? 'pill--active' : '' %>">All</a>
+          <% categories.forEach(cat => { %>
+            <a href="/products?category=<%= cat %><%= activeSort !== 'default' ? '&sort=' + activeSort : '' %>"
+               class="pill <%= activeCategory === cat ? 'pill--active' : '' %>">
+              <%= cat.charAt(0).toUpperCase() + cat.slice(1) %>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Sort:</label>
+        <select onchange="window.location.href='/products?category=<%= activeCategory %>&sort=' + this.value">
+          <option value="default" <%= activeSort === 'default' ? 'selected' : '' %>>Default</option>
+          <option value="price-asc" <%= activeSort === 'price-asc' ? 'selected' : '' %>>Price: Low → High</option>
+          <option value="price-desc" <%= activeSort === 'price-desc' ? 'selected' : '' %>>Price: High → Low</option>
+          <option value="rating" <%= activeSort === 'rating' ? 'selected' : '' %>>Top Rated</option>
+        </select>
+      </div>
+    </div>
+
+    <% if (products.length === 0) { %>
+      <div class="empty-state">
+        <h2>No products found</h2>
+        <p>Try a different category or <a href="/products">view all products</a>.</p>
+      </div>
+    <% } else { %>
+      <div class="product-grid">
+        <% products.forEach(product => { %>
+          <%- include('partials/product-card', { product }) %>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

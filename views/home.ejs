@@ -1,0 +1,65 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <span class="hero-tag">New Season</span>
+      <h1>Quality essentials,<br>thoughtfully crafted.</h1>
+      <p>Discover products built to last — from everyday tech to wardrobe staples.</p>
+      <a href="/products" class="btn btn-primary btn-lg">Shop Now</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Featured Products</h2>
+      <a href="/products" class="link-arrow">View all →</a>
+    </div>
+    <div class="product-grid">
+      <% featured.forEach(product => { %>
+        <%- include('partials/product-card', { product }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="container">
+    <div class="categories-grid">
+      <a href="/products?category=electronics" class="category-card">
+        <div class="category-icon">⚡</div>
+        <h3>Electronics</h3>
+        <p>Audio, gadgets & tech</p>
+      </a>
+      <a href="/products?category=clothing" class="category-card">
+        <div class="category-icon">👕</div>
+        <h3>Clothing</h3>
+        <p>Apparel & footwear</p>
+      </a>
+      <a href="/products?category=accessories" class="category-card">
+        <div class="category-icon">⌚</div>
+        <h3>Accessories</h3>
+        <p>Watches, bags & more</p>
+      </a>
+      <a href="/products?category=lifestyle" class="category-card">
+        <div class="category-icon">☕</div>
+        <h3>Lifestyle</h3>
+        <p>Home & everyday</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="promo-banner">
+      <h2>Free shipping on orders over €100</h2>
+      <p>Plus hassle-free 30-day returns on everything.</p>
+      <a href="/products" class="btn btn-outline">Start Shopping</a>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
