@@ -34,15 +34,65 @@
           <% } %>
         </div>
 
-        <p class="product-detail-desc"><%= product.description %></p>
+        <!-- Fragment navigation tabs -->
+        <div class="product-tabs">
+          <a href="#description" class="product-tab active" onclick="switchTab(event, 'description')">Description</a>
+          <a href="#features" class="product-tab" onclick="switchTab(event, 'features')">Features</a>
+          <a href="#shipping" class="product-tab" onclick="switchTab(event, 'shipping')">Shipping & Returns</a>
+          <a href="#reviews" class="product-tab" onclick="switchTab(event, 'reviews')">Reviews</a>
+        </div>
 
-        <div class="product-features">
-          <h3>Features</h3>
-          <ul>
-            <% product.features.forEach(f => { %>
-              <li><%= f %></li>
-            <% }) %>
-          </ul>
+        <!-- #description fragment -->
+        <div id="description" class="product-tab-content active">
+          <p class="product-detail-desc"><%= product.description %></p>
+        </div>
+
+        <!-- #features fragment -->
+        <div id="features" class="product-tab-content">
+          <div class="product-features">
+            <h3>Features</h3>
+            <ul>
+              <% product.features.forEach(f => { %>
+                <li><%= f %></li>
+              <% }) %>
+            </ul>
+          </div>
+        </div>
+
+        <!-- #shipping fragment -->
+        <div id="shipping" class="product-tab-content">
+          <div class="product-meta-detail">
+            <div><strong>Free shipping</strong> on orders over €100</div>
+            <div><strong>Standard delivery:</strong> 3-5 business days</div>
+            <div><strong>Express delivery:</strong> 1-2 business days (+€9.99)</div>
+            <div style="margin-top: 12px;"><strong>Returns:</strong> Free returns within 30 days. Items must be unused and in original packaging.</div>
+            <div><strong>Warranty:</strong> 2-year manufacturer warranty included.</div>
+          </div>
+        </div>
+
+        <!-- #reviews fragment -->
+        <div id="reviews" class="product-tab-content">
+          <div class="product-reviews-summary">
+            <div class="reviews-score">
+              <span class="reviews-big-star">★</span>
+              <span class="reviews-big-number"><%= product.rating %></span>
+              <span class="reviews-count">out of 5 · <%= product.reviewCount.toLocaleString() %> reviews</span>
+            </div>
+            <div class="reviews-placeholder">
+              <div class="review-item">
+                <div class="review-header"><strong>Sarah K.</strong> <span class="review-stars">★★★★★</span></div>
+                <p>Absolutely love this product! Great quality and exactly as described.</p>
+              </div>
+              <div class="review-item">
+                <div class="review-header"><strong>James M.</strong> <span class="review-stars">★★★★☆</span></div>
+                <p>Very good value for money. Would definitely recommend to others.</p>
+              </div>
+              <div class="review-item">
+                <div class="review-header"><strong>Ana L.</strong> <span class="review-stars">★★★★★</span></div>
+                <p>Fast shipping and the product exceeded my expectations. Will buy again!</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="add-to-cart-form">
@@ -103,7 +153,6 @@
     .then(r => r.json())
     .then(data => {
       if (data.success) {
-        // Update cart badge
         let badge = document.querySelector('.cart-badge');
         if (!badge) {
           badge = document.createElement('span');
@@ -112,7 +161,6 @@
         }
         badge.textContent = data.cartCount;
 
-        // Show feedback
         const btn = document.querySelector('.add-to-cart-btn');
         const original = btn.innerHTML;
         btn.innerHTML = '✓ Added to Cart';
@@ -124,6 +172,36 @@
       }
     });
   }
+
+  // Tab switching with fragment updates
+  function switchTab(event, tabId) {
+    event.preventDefault();
+
+    // Update URL fragment
+    history.replaceState(null, '', '#' + tabId);
+
+    // Toggle active tab
+    document.querySelectorAll('.product-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // Toggle active content
+    document.querySelectorAll('.product-tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  // Activate correct tab if page loads with a fragment
+  (function() {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && document.getElementById(hash)) {
+      const tab = document.querySelector('.product-tab[href="#' + hash + '"]');
+      if (tab) {
+        document.querySelectorAll('.product-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelectorAll('.product-tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(hash).classList.add('active');
+      }
+    }
+  })();
 </script>
 
 <%- include('partials/footer') %>
